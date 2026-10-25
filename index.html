@@ -33,6 +33,69 @@ main{margin-top:28px}
 #loginPanel{border-top:5px solid #f78d20}
 .field input:focus,.field select:focus,.field textarea:focus,.search input:focus{outline:2px solid #f78d20;outline-offset:1px}
 @media(max-width:550px){.mark{width:55px;height:55px}.brand{gap:10px}header{padding:15px}.subtitle{font-size:12px}.stat{padding:13px}.tabs{gap:2px}}
+
+/* APC66 — optimisation smartphone : sans changement des règles métier */
+@media(max-width:700px){
+ html,body{max-width:100%;overflow-x:hidden}
+ header{padding:13px 14px}
+ .top,.brand{min-width:0}
+ .brand{align-items:center}
+ .brand>div:last-child{min-width:0}
+ h1{font-size:clamp(16px,4.6vw,22px);overflow-wrap:anywhere}
+ .subtitle{font-size:11px;line-height:1.35}
+ main{padding:0 12px 24px;margin-top:18px}
+ .intro{display:block;margin-bottom:14px}
+ .intro h2{font-size:23px}
+ .intro p{font-size:13px}
+ .actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}
+ .actions .btn{width:100%;min-width:0;min-height:44px;padding:10px 7px;font-size:12px}
+ .actions #addVehicle{grid-column:1/-1;font-size:14px}
+ .stats{gap:9px;margin-bottom:13px}
+ .stat{min-width:0;padding:12px}
+ .stat-label{font-size:12px;line-height:1.25}
+ .stat-value{font-size:27px}
+ .stat-note{font-size:11px}
+ .panel{border-radius:15px}
+ .tabs{padding:5px 7px 0;gap:3px;scroll-snap-type:x proximity;overscroll-behavior-x:contain;scrollbar-width:thin}
+ .tab{padding:13px 11px;min-height:46px;font-size:13px;scroll-snap-align:start}
+ .toolbar{display:grid;grid-template-columns:1fr;gap:10px;padding:12px}
+ .search{min-width:0;max-width:none;width:100%}
+ .search input{min-height:46px;font-size:16px}
+ .filters{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+ .filters select{min-width:0;width:100%;font-size:13px}
+ .filters .btn{min-width:0;font-size:12px;padding:10px 6px;min-height:44px}
+ .table-wrap{overflow:visible;padding:0 10px 12px}
+ table{min-width:0;width:100%;display:block}
+ thead{display:none}
+ tbody{display:grid;gap:11px}
+ tbody tr{display:block;border:1px solid var(--line);border-left:4px solid #f78d20;border-radius:13px;background:white;box-shadow:0 3px 10px #12355b0b;overflow:hidden}
+ tbody td{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:10px 12px;border-bottom:1px solid #edf1f5;min-width:0;overflow-wrap:anywhere;text-align:right}
+ tbody td:last-child{border-bottom:0}
+ tbody td::before{content:attr(data-label);color:var(--muted);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.025em;text-align:left;max-width:42%;flex:0 0 42%;padding-top:2px}
+ tbody td .row-actions{justify-content:flex-end;width:100%}
+ tbody td:has(.row-actions){flex-wrap:wrap}
+ tbody td:has(.row-actions)::before{flex:1}
+ .iconbtn{min-height:40px;padding:9px 12px}
+ .modal{max-height:calc(100dvh - 16px);width:100%;border-radius:14px}
+ .backdrop{padding:8px;align-items:center}
+ .modal-head{padding:13px 15px}
+ .modal-head h3{font-size:17px}
+ .modal-body{padding:15px}
+ .modal-foot{padding:0 15px 15px;display:grid;grid-template-columns:1fr 1fr}
+ .modal-foot .btn{min-height:46px}
+ .field input,.field select,.field textarea{font-size:16px;min-height:44px}
+ .close{min-width:44px;min-height:44px}
+ #loginPanel{margin:16px auto!important;padding:18px!important}
+ #loginPanel .btn{min-height:44px}
+ .notice{font-size:12px}
+ footer{padding:0 14px 24px;font-size:11px}
+}
+@media(max-width:370px){
+ .stat-value{font-size:23px}
+ .filters{grid-template-columns:1fr}
+ .actions .btn{font-size:11px}
+ .mark{width:48px;height:48px}
+}
 </style></head><body>
 <header><div class="top"><div class="brand"><div class="mark"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3f/Protection_Civile_-_Logo_2017.svg" alt="Logo de la Protection Civile" width="64" height="64"></div><div><h1>Protection Civile — Pyrénées-Orientales</h1><div class="subtitle">Suivi du parc automobile · APC66</div></div></div><div class="badge" id="sessionBadge">APC66 · Connexion requise</div></div></header>
 <main>
@@ -84,7 +147,10 @@ if(tab==='vehicles'){head='<tr><th>Véhicule</th><th>Immatriculation</th><th>Kil
 if(tab==='maintenance'){head='<tr><th>Date</th><th>Véhicule</th><th>Intervention</th><th>Kilométrage</th><th>Coût</th><th>Actions</th></tr>';rows=db.services.filter(s=>{let v=vehicle(s.vehicleId);return !q||[v?.name,v?.plate,s.kind,s.provider,s.notes,s.responsible].join(' ').toLowerCase().includes(q)}).sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(s=>{let v=vehicle(s.vehicleId);return `<tr><td>${date(s.date)}</td><td><div class="vehicle">${esc(v?.name||'Véhicule supprimé')}</div><div class="sub">${esc(v?.plate||'')}</div></td><td><b>${esc(s.kind)}</b><div class="sub">${esc(s.provider||'')} ${s.responsible?'· '+esc(s.responsible):''}</div></td><td>${s.km?Number(s.km).toLocaleString('fr-FR')+' km':'—'}</td><td>${s.cost!==''&&s.cost!=null?Number(s.cost).toLocaleString('fr-FR',{style:'currency',currency:'EUR'}):'—'}</td><td><div class="row-actions"><button class="iconbtn" data-act="editS" data-id="${s.id}">Modifier</button>${currentRole==='admin'?`<button class="iconbtn" data-act="delS" data-id="${s.id}">Supprimer</button>`:''}</div></td></tr>`})}
 if(tab==='documents'){head='<tr><th>Document / échéance</th><th>Véhicule</th><th>Date d’échéance</th><th>Référence / notes</th><th>État</th><th>Actions</th></tr>';rows=db.documents.filter(d=>{let v=vehicle(d.vehicleId);return(!q||[d.kind,d.reference,d.notes,v?.name,v?.plate].join(' ').toLowerCase().includes(q))&&(!f||dueStatus(d.dueDate)===f)}).sort((a,b)=>(a.dueDate||'').localeCompare(b.dueDate||'')).map(d=>{let v=vehicle(d.vehicleId);return `<tr><td><b>${esc(d.kind)}</b></td><td>${esc(v?.name||'—')}<div class="sub">${esc(v?.plate||'')}</div></td><td>${date(d.dueDate)}</td><td>${esc(d.reference||'—')}<div class="sub">${esc(d.notes||'')}</div></td><td>${badge(dueStatus(d.dueDate))}</td><td><div class="row-actions"><button class="iconbtn" data-act="editD" data-id="${d.id}">Modifier</button>${currentRole==='admin'?`<button class="iconbtn" data-act="delD" data-id="${d.id}">Supprimer</button>`:''}</div></td></tr>`})}
 if(tab==='responsibles'){head='<tr><th>Responsable</th><th>Rôle</th><th>Contact interne</th><th>Véhicules attribués</th><th>Actions</th></tr>';rows=db.responsibles.filter(r=>!q||[r.name,r.role,r.contact].join(' ').toLowerCase().includes(q)).map(r=>`<tr><td><div class="vehicle">${esc(r.name)}</div></td><td>${esc(r.role||'—')}</td><td>${esc(r.contact||'—')}</td><td>${db.vehicles.filter(v=>v.responsible===r.name).map(v=>esc(v.name)).join(', ')||'—'}</td><td><div class="row-actions">${currentRole==='admin'?`<button class="iconbtn" data-act="editR" data-id="${r.id}">Modifier</button>`:'Consultation seule'}${currentRole==='admin'?`<button class="iconbtn" data-act="delR" data-id="${r.id}">Supprimer</button>`:''}</div></td></tr>`)}
-$('thead').innerHTML=head;$('tbody').innerHTML=rows.join('');$('empty').hidden=rows.length>0;
+$('thead').innerHTML=head;$('tbody').innerHTML=rows.join('');
+const mobileLabels=[...$('thead').querySelectorAll('th')].map(th=>th.textContent.trim());
+$('tbody').querySelectorAll('tr').forEach(tr=>{[...tr.querySelectorAll('td')].forEach((td,i)=>td.setAttribute('data-label',mobileLabels[i]||'Actions'));});
+$('empty').hidden=rows.length>0;
 }
 function field(label,name,value='',type='text',extra=''){return `<div class="field"><label for="${name}">${label}</label><input id="${name}" name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`}
 function select(label,name,opts,value=''){return `<div class="field"><label for="${name}">${label}</label><select id="${name}" name="${name}">${opts.map(o=>`<option value="${esc(o[0])}" ${o[0]===value?'selected':''}>${esc(o[1])}</option>`).join('')}</select></div>`}
