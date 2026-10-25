@@ -129,7 +129,7 @@ main{margin-top:28px}
 </div>
 </main><footer><span>APC66 · Suivi du parc automobile</span><span>Accès réservé aux comptes autorisés · Phase de validation.</span></footer>
 <div class="backdrop" id="backdrop" role="dialog" aria-modal="true"><div class="modal"><div class="modal-head"><h3 id="modalTitle">Ajouter</h3><button class="close" id="close">×</button></div><form id="form"><div class="modal-body" id="modalBody"></div><div class="modal-foot"><button type="button" class="btn" id="cancel">Annuler</button><button class="btn primary" id="save" type="submit">Enregistrer</button></div></form></div></div><input type="file" id="fileInput" accept=".json,application/json" hidden>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 (()=>{const SUPABASE_URL='https://deevoohyuvgwixniieje.supabase.co';const SUPABASE_KEY='sb_publishable_Vl8ujkL0YpK4l7u-9hdFeQ_bQhWWX6f';let supabaseClient=null,currentUser=null,currentRole='responsable';let db={vehicles:[],services:[],documents:[],responsibles:[]},tab='vehicles',mode='',editId=null;const $=id=>document.getElementById(id);const today=new Date();today.setHours(0,0,0,0);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);const date=d=>{if(!d)return'—';const x=new Date(d+'T00:00:00');return isNaN(x)?'—':x.toLocaleDateString('fr-FR')};const vehicle=id=>db.vehicles.find(v=>v.id===id);
@@ -205,7 +205,7 @@ function renderSmartAlerts(){
 function render(){ renderSmartAlerts(); renderDeadlines(); if(location.hash.startsWith('#vehicule='))queueMicrotask(openLinkedVehicle); $('addRecord').style.display=(tab==='responsibles'&&currentRole!=='admin')?'none':''; $('nVehicles').textContent=db.vehicles.length;$('nSoon').textContent=db.vehicles.reduce((n,v)=>n+['nextService','techDate','insuranceDate','adminDate'].filter(k=>dueStatus(v[k])==='soon').length,0);$('nLate').textContent=db.vehicles.reduce((n,v)=>n+['nextService','techDate','insuranceDate','adminDate'].filter(k=>dueStatus(v[k])==='late').length,0);$('nServices').textContent=db.services.length;
 const q=$('search').value.toLowerCase().trim(),f=$('filter').value;$('filter').style.display=tab==='vehicles'||tab==='documents'?'':'none';
 let head='',rows=[];
-if(tab==='vehicles'){head='<tr><th>Véhicule</th><th>Immatriculation</th><th>Kilométrage</th><th>Responsable</th><th>Échéances</th><th>Actions</th></tr>';rows=db.vehicles.filter(v=>(!q||[v.name,v.plate,v.type,v.responsible,v.notes].join(' ').toLowerCase().includes(q))&&(!f||vehicleStatus(v)===f)).map(v=>`<tr><td><div class="vehicle">${esc(v.name)}</div><div class="sub">${esc(v.type||'Type non précisé')} ${v.brand?'· '+esc(v.brand):''}</div></td><td><b>${esc(v.plate||'—')}</b></td><td>${v.km?Number(v.km).toLocaleString('fr-FR')+' km':'—'}</td><td>${esc(v.responsible||'Non attribué')}</td><td>${badge(vehicleStatus(v))}<div class="sub">Prochain entretien : ${date(v.nextService)}</div></td><td><div class="row-actions"><button class="iconbtn" data-act="qr" data-id="${v.id}">QR code</button><button class="iconbtn" data-act="editV" data-id="${v.id}">Modifier</button><button class="iconbtn" data-act="service" data-id="${v.id}">+ Intervention</button><button class="iconbtn" data-act="history" data-id="${v.id}">Historique</button></div></td></tr>`)}
+if(tab==='vehicles'){head='<tr><th>Véhicule</th><th>Immatriculation</th><th>Kilométrage</th><th>Responsable</th><th>Échéances</th><th>Actions</th></tr>';rows=db.vehicles.filter(v=>(!q||[v.name,v.plate,v.type,v.responsible,v.notes].join(' ').toLowerCase().includes(q))&&(!f||vehicleStatus(v)===f)).map(v=>`<tr><td><div class="vehicle">${esc(v.name)}</div><div class="sub">${esc(v.type||'Type non précisé')} ${v.brand?'· '+esc(v.brand):''}</div></td><td><b>${esc(v.plate||'—')}</b></td><td>${v.km?Number(v.km).toLocaleString('fr-FR')+' km':'—'}</td><td>${esc(v.responsible||'Non attribué')}</td><td>${badge(vehicleStatus(v))}<div class="sub">Prochain entretien : ${date(v.nextService)}</div></td><td><div class="row-actions"><button type="button" class="iconbtn" data-act="qr" data-id="${v.id}">QR code</button><button class="iconbtn" data-act="editV" data-id="${v.id}">Modifier</button><button class="iconbtn" data-act="service" data-id="${v.id}">+ Intervention</button><button class="iconbtn" data-act="history" data-id="${v.id}">Historique</button></div></td></tr>`)}
 if(tab==='maintenance'){head='<tr><th>Date</th><th>Véhicule</th><th>Intervention</th><th>Kilométrage</th><th>Coût</th><th>Actions</th></tr>';rows=db.services.filter(s=>{let v=vehicle(s.vehicleId);return !q||[v?.name,v?.plate,s.kind,s.provider,s.notes,s.responsible].join(' ').toLowerCase().includes(q)}).sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(s=>{let v=vehicle(s.vehicleId);return `<tr><td>${date(s.date)}</td><td><div class="vehicle">${esc(v?.name||'Véhicule supprimé')}</div><div class="sub">${esc(v?.plate||'')}</div></td><td><b>${esc(s.kind)}</b><div class="sub">${esc(s.provider||'')} ${s.responsible?'· '+esc(s.responsible):''}</div></td><td>${s.km?Number(s.km).toLocaleString('fr-FR')+' km':'—'}</td><td>${s.cost!==''&&s.cost!=null?Number(s.cost).toLocaleString('fr-FR',{style:'currency',currency:'EUR'}):'—'}</td><td><div class="row-actions"><button class="iconbtn" data-act="editS" data-id="${s.id}">Modifier</button>${currentRole==='admin'?`<button class="iconbtn" data-act="delS" data-id="${s.id}">Supprimer</button>`:''}</div></td></tr>`})}
 if(tab==='documents'){head='<tr><th>Document / échéance</th><th>Véhicule</th><th>Date d’échéance</th><th>Référence / notes</th><th>État</th><th>Actions</th></tr>';rows=db.documents.filter(d=>{let v=vehicle(d.vehicleId);return(!q||[d.kind,d.reference,d.notes,v?.name,v?.plate].join(' ').toLowerCase().includes(q))&&(!f||dueStatus(d.dueDate)===f)}).sort((a,b)=>(a.dueDate||'').localeCompare(b.dueDate||'')).map(d=>{let v=vehicle(d.vehicleId);return `<tr><td><b>${esc(d.kind)}</b></td><td>${esc(v?.name||'—')}<div class="sub">${esc(v?.plate||'')}</div></td><td>${date(d.dueDate)}</td><td>${esc(d.reference||'—')}<div class="sub">${esc(d.notes||'')}</div></td><td>${badge(dueStatus(d.dueDate))}</td><td><div class="row-actions"><button class="iconbtn" data-act="editD" data-id="${d.id}">Modifier</button>${currentRole==='admin'?`<button class="iconbtn" data-act="delD" data-id="${d.id}">Supprimer</button>`:''}</div></td></tr>`})}
 if(tab==='responsibles'){head='<tr><th>Responsable</th><th>Rôle</th><th>Contact interne</th><th>Véhicules attribués</th><th>Actions</th></tr>';rows=db.responsibles.filter(r=>!q||[r.name,r.role,r.contact].join(' ').toLowerCase().includes(q)).map(r=>`<tr><td><div class="vehicle">${esc(r.name)}</div></td><td>${esc(r.role||'—')}</td><td>${esc(r.contact||'—')}</td><td>${db.vehicles.filter(v=>v.responsible===r.name).map(v=>esc(v.name)).join(', ')||'—'}</td><td><div class="row-actions">${currentRole==='admin'?`<button class="iconbtn" data-act="editR" data-id="${r.id}">Modifier</button>`:'Consultation seule'}${currentRole==='admin'?`<button class="iconbtn" data-act="delR" data-id="${r.id}">Supprimer</button>`:''}</div></td></tr>`)}
@@ -230,12 +230,33 @@ function addService(id=null,vid=null){if(!db.vehicles.length){alert('Ajoutez d�
 function addDoc(id=null){if(!db.vehicles.length){alert('Ajoutez d’abord un véhicule.');return}open(id?'Modifier le document':'Ajouter un document ou une échéance',docForm(id?db.documents.find(x=>x.id===id):{}),'document',id)}
 function addResp(id=null){if(currentRole!=='admin'){alert('Action réservée à l’administrateur.');return}open(id?'Modifier le responsable':'Ajouter un responsable',respForm(id?db.responsibles.find(x=>x.id===id):{}),'responsible',id)}
 function showQR(id){
- const v=vehicle(id);if(!v)return;
- const link=new URL(location.href);link.hash='vehicule='+encodeURIComponent(id);
- open('QR code — '+v.name,'<p class="help">Ce QR code ouvre la fiche après authentification. Il ne contient aucune donnée personnelle.</p><div style="display:grid;justify-items:center;gap:12px"><canvas id="vehicleQR" aria-label="QR code du véhicule"></canvas><input id="qrLink" readonly style="width:100%;padding:9px" value="'+esc(link.href)+'"><button class="btn" type="button" id="copyQR">Copier le lien</button><button class="btn" type="button" id="downloadQR">Télécharger le QR code</button></div>','history',id);
- $('copyQR').onclick=()=>navigator.clipboard?.writeText(link.href).then(()=>alert('Lien copié')).catch(()=>prompt('Copiez le lien :',link.href));
- if(!window.QRCode){$('vehicleQR').replaceWith(document.createTextNode('Bibliothèque QR indisponible. Utilisez le lien ci-dessous.'));$('downloadQR').hidden=true;return;}
- QRCode.toCanvas($('vehicleQR'),link.href,{width:230,margin:2},err=>{if(err){alert('QR code indisponible');return} $('downloadQR').onclick=()=>{const a=document.createElement('a');a.download='APC66-QR-'+(v.plate||v.name).replace(/[^a-z0-9_-]/gi,'_')+'.png';a.href=$('vehicleQR').toDataURL('image/png');a.click()};});
+ const v=vehicle(id);
+ if(!v){alert('Véhicule introuvable. Actualisez la page.');return;}
+ const link=new URL(location.pathname+location.search,location.origin);
+ link.hash='vehicule='+encodeURIComponent(id);
+ const body='<p class="help">Scannez ce QR code pour ouvrir la fiche après connexion.</p>'+
+ '<div style="display:grid;justify-items:center;gap:12px">'+
+ '<div id="vehicleQR" style="padding:12px;background:white;min-height:230px;min-width:230px;display:grid;place-items:center"></div>'+
+ '<input id="qrLink" readonly style="width:100%;padding:9px" value="'+esc(link.href)+'">'+
+ '<button class="btn" type="button" id="copyQR">Copier le lien</button>'+
+ '<button class="btn" type="button" id="downloadQR">Télécharger le QR code</button></div>';
+ open('QR code — '+v.name,body,'history',id);
+ $('copyQR').onclick=()=>{const input=$('qrLink');input.select();if(navigator.clipboard?.writeText){navigator.clipboard.writeText(link.href).then(()=>alert('Lien copié')).catch(()=>prompt('Copiez ce lien :',link.href))}else{prompt('Copiez ce lien :',link.href)}};
+ if(typeof QRCode!=='function'){
+  $('vehicleQR').textContent='Le générateur QR n’a pas été chargé. Vérifiez votre connexion Internet.';
+  $('downloadQR').disabled=true;
+  return;
+ }
+ try{
+  new QRCode($('vehicleQR'),{text:link.href,width:220,height:220,colorDark:'#102C50',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+  $('downloadQR').onclick=()=>{
+   const canvas=$('vehicleQR').querySelector('canvas');
+   const img=$('vehicleQR').querySelector('img');
+   const url=canvas?.toDataURL('image/png')||img?.src;
+   if(!url){alert('QR code en cours de génération. Réessayez.');return;}
+   const a=document.createElement('a');a.download='APC66-QR-'+(v.plate||v.name).replace(/[^a-z0-9_-]/gi,'_')+'.png';a.href=url;a.click();
+  };
+ }catch(err){console.error('QR code:',err);$('vehicleQR').textContent='Impossible de générer le QR code.';$('downloadQR').disabled=true;}
 }
 function openLinkedVehicle(){
  const match=location.hash.match(/^#vehicule=([0-9a-f-]{36})$/i);

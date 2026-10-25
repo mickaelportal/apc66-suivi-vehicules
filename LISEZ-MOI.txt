@@ -1,8 +1,1 @@
-APC66 — Alertes avancées + application installable + QR codes
-Déployer TOUS les fichiers à la racine du dépôt GitHub : index.html, manifest.webmanifest, sw.js, icon-192.png, icon-512.png.
-Important : les alertes sont affichées dans l'application. Aucun e-mail ni notification push automatique n'est envoyé.
-QR codes : ouvrir la rubrique Véhicules et cliquer sur QR code. Le lien exige une authentification.
-Installation : Android, menu du navigateur > Installer l'application; iPhone Safari > Partager > Sur l'écran d'accueil.
-L'application a besoin d'une connexion Internet pour les données Supabase ; aucune donnée de véhicule n'est mise en cache par le service worker.
-Les icônes de l'application portent APC66 en orange et bleu; le logo officiel reste dans l'en-tête.
-Tester d'abord sur un véhicule fictif et avec les deux rôles.
+CORRECTIF QR CODE APC66. Déposez les 5 fichiers index.html, sw.js, manifest.webmanifest, icon-192.png et icon-512.png à la racine du dépôt GitHub. Le correctif change la bibliothèque QR et la génération du code. Les données Supabase ne sont pas modifiées. Vérifiez le résultat après rechargement forcé.
