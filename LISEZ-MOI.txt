@@ -1,0 +1,18 @@
+APC66 — Suivi du parc automobile (version adaptée)
+====================================================
+
+Pour tester :
+1. Décompresser le ZIP.
+2. Ouvrir index.html dans un navigateur récent.
+3. Ajouter les véhicules, les responsables, les interventions et les échéances.
+
+Fonctions :
+- Gestion d'un petit parc de véhicules (<10, mais aucune limite fixe).
+- Attribution d'un responsable à chaque véhicule.
+- Entretiens, réparations, kilométrage, coût et prestataire.
+- Échéances d'entretien, contrôle technique, assurance et autres documents.
+- Alertes visuelles pour échéances dépassées et à venir dans les 30 jours.
+- Historique par véhicule, recherche, export et import JSON.
+
+Limites importantes :
+Cette version est un prototype local. Les données restent dans le navigateur de chaque appareil. Le registre des responsables est une liste d'organisation, PAS une authentification sécurisée. Il n'y a pas de synchronisation entre responsables. Pour un usage collectif réel, il faut publier l'interface avec un backend/base de données, des comptes nominatifs, des rôles d'accès, des sauvegardes et une politique de confidentialité. Ne pas saisir de données sensibles. À faire valider par l'association avant usage opérationnel.
