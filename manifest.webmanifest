@@ -1,7 +1,7 @@
+
 {
-  "name": "APC66 â€” Gestion du parc automobile",
-  "short_name": "APC66 Parc",
-  "description": "Suivi du parc automobile APC66",
+  "name": "APC66 - Gestion opŽrationnelle",
+  "short_name": "APC66",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
