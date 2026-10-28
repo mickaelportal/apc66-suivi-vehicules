@@ -299,7 +299,7 @@ async function loadVehicleQRHistory(vehicleId){
     '<div class="two-col"><div class="metric"><span>Départ</span><b>'+km(p.departure_km)+'</b><small>'+val(p.departure_driver)+'</small></div><div class="metric"><span>Retour</span><b>'+km(p.return_km)+'</b><small>'+val(p.return_driver)+'</small></div></div>'+
     '<p><b>Distance :</b> '+km(p.distance_km)+' · <b>Carburant :</b> '+val(p.departure_fuel)+' → '+val(p.return_fuel)+'</p>'+
     '<p><b>DPS retour :</b> '+val(p.return_dps)+' · <b>Plein effectué :</b> '+yes(p.refueled)+' · <b>Problème mécanique :</b> '+yes(p.mechanical_problem)+'</p>'+
-    '<p><b>Contrôles départ :</b> pneus '+val(p.tires_status)+', carrosserie '+val(p.body_status)+', sirène '+val(p.siren_status)+', gyrophares '+val(p.beacons_status)+'</p>'+
+    '<p><b>Contrôles départ :</b> pneus '+val(p.tires_status)+', carrosserie '+val(p.body_status)+', sirène '+val(p.siren_status)+', gyrophares '+val(p.beacons_status)+', feux '+val(p.lights_status)+', clignotants '+val(p.indicators_status)+'</p>'+
     '<p class="record-note"><b>Observations départ :</b> '+val(p.departure_notes)+'</p><p class="record-note"><b>Observations retour :</b> '+val(p.return_notes)+'</p>'+
     (imgs.length?'<div><b>Photos :</b> '+imgs.map((photo,j)=>'<button type="button" class="iconbtn" data-qr-photo="'+i+'-'+j+'">'+(photo.phase==='depart'?'Départ':'Retour')+' · Photo '+(j+1)+'</button>').join(' ')+'</div>':'<p class="help">Aucune photo associée.</p>')+'</div>';
   }).join('');
